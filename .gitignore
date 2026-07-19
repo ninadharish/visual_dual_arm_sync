@@ -1,0 +1,41 @@
+# Local environment
+.env
+
+# Isaac Sim generated runtime data
+isaac-sim/cache/
+isaac-sim/config/
+isaac-sim/data/
+isaac-sim/hub/
+isaac-sim/logs/
+isaac-sim/pkg/
+
+# ROS 2 generated workspace data
+ros_ws/build/
+ros_ws/install/
+ros_ws/log/
+
+# Raw/large experiment outputs
+results/bags/
+results/raw/
+results/videos/
+*.mcap
+*.db3
+*.bag
+
+# Downloaded installers and archives
+runtime/downloads/
+*.deb
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Editors and OS files
+.vscode/
+.idea/
+.DS_Store
+*~
+*.swp
+*.tmp
+*.bak
