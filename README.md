@@ -76,14 +76,74 @@ id -un
 
 `ISAACSIM_HOST` is only needed for WebRTC mode. Set it to the host's active LAN IP when using WebRTC.
 
-## Build and start the containers
+## Prepare the Docker images
 
-From the repository root:
+This project uses two Docker images:
+
+| Service | Image source | Required action |
+|---|---|---|
+| `isaac` | Prebuilt NVIDIA Isaac Sim image from NVIDIA NGC | Download the image |
+| `ros` | Custom image defined by `docker/ros/Dockerfile` | Build the image locally |
+
+Run the following commands from the repository root:
+
+```bash
+cd ~/projects/visual_dual_arm_sync
+```
+
+### 1. Download the Isaac Sim image
+
+The Isaac Sim image has already been built by NVIDIA. Download the version specified by `ISAAC_SIM_VERSION` in `.env`:
 
 ```bash
 docker compose pull isaac
+```
+
+For example:
+
+```env
+ISAAC_SIM_VERSION=6.0.1
+```
+
+This repository does not build or modify the Isaac Sim image.
+
+### 2. Build the ROS 2 development image
+
+The ROS image is built locally from:
+
+```text
+docker/ros/Dockerfile
+```
+
+Build it with:
+
+```bash
 docker compose build ros
+```
+
+This installs ROS 2 Jazzy and the development dependencies defined in the Dockerfile.
+
+### 3. Verify both images
+
+```bash
+docker compose images
+```
+
+The output should list an image for both the `isaac` and `ros` services.
+
+
+## Create and start the containers
+
+After the images are available, create and start the two idle containers:
+
+```bash
 docker compose up -d
+```
+
+`docker compose up -d --build` can also build the ROS image while starting the containers:
+
+```bash
+docker compose up -d --build
 ```
 
 Check service status:
@@ -92,7 +152,9 @@ Check service status:
 docker compose ps
 ```
 
-## Run Isaac Sim in direct GUI mode
+The containers start with `sleep infinity`; Isaac Sim itself is launched manually in GUI or WebRTC mode.
+
+## Option 1: Run Isaac Sim in direct GUI mode
 
 Allow the container to access the local X11 display:
 
@@ -115,9 +177,13 @@ Inside the container:
 
 The Compose configuration already sets the ROS 2 Jazzy library path required by the Isaac Sim ROS bridge.
 
-## Optional: run headless with WebRTC
+## Option 2: Run Isaac Sim headless with WebRTC
 
 Ensure `ISAACSIM_HOST` in `.env` matches an active host network interface, then open an Isaac shell:
+
+```bash
+docker compose exec isaac bash
+```
 
 Inside the container:
 
